@@ -1,83 +1,120 @@
 <template>
-    <v-select v-bind="computedProps" v-on="$listeners"></v-select>
+    <v-autocomplete
+      :items="countries"
+      item-text="countryName"
+      item-value="text"
+      :value="value"
+      v-model="country"
+      :outlined="outlined"
+      :filled="filled"
+      :flat="flat"
+      :label="label"
+      :country="country"
+      :rules="rules"
+      @input="selectCountry()"
+      return-object
+    ></v-autocomplete>
 </template>
 
+
 <script>
-import { VSelect } from 'vuetify/lib'
-import regions from '@/data.js'
+import { VAutocomplete } from "vuetify/lib";
+import countries from "@/data.js";
+// import { EventBus } from "../main";
+import { EventBus } from "@/event";
 
 export default {
-    name: 'VCountrySelect',
-    extends: VSelect,
-    props: {
-        countryName: Boolean,
-        whiteList: Array,
-        blackList: Array,
-        displayShortCode: { type: Boolean, default: false },
-        topCountry: { type: String, default: '' },
-        placeholder: { type: String, default: 'Select Country' },
-        usei18n: { type: Boolean, default: true },
+  name: "VCountrySelect",
+  extends: VAutocomplete,
+  props: {
+    countriess: {
+      type: [Array],
     },
-    computed: {
-        countries() {
-            let countryList = regions.filter((region) => {
-                if (this.countryName) {
-                    return region.countryName !== this.firstCountry
-                } else {
-                    return region.countryShortCode !== this.firstCountry
-                }
-            })
-            if (this.whiteList) {
-                countryList = countryList.filter((country) => {
-                    return this.whiteList.includes(country.countryShortCode)
-                })
-            }
-            if (this.blackList) {
-                countryList = countryList.filter((country) => {
-                    return !this.blackList.includes(country.countryShortCode)
-                })
-            }
-            if (this.$i18n && this.usei18n) {
-                countryList = countryList.map((country) => {
-                    let localeCountry = Object.assign({ }, country)
-                    localeCountry.countryName = this.$t(country.countryName)
-                    return localeCountry
-                })
-                countryList.sort((country1, country2) => {
-                    return (country1.countryName > country2.countryName) ? 1 : -1
-                })
-            }
-            return countryList
-        },
-        firstCountry() {
-            if(this.countryName) {
-                if(this.topCountry.length === 2 ) {
-                const regionObj = regions.find((region) => {
-                    return region.countryShortCode === this.topCountry
-                })
-                return regionObj.countryName
-                } else {
-                return this.topCountry
-                }
-            }
-            if (this.topCountry) {
-                return this.topCountry
-            }
-            return ''
-        },
-        autocompleteAttr() {
-            const autocompleteType = (showsFullCountryName) => showsFullCountryName ? "country-name" : "country";
-            return this.autocomplete ? autocompleteType(this.countryName) : "off";
-        },
-        computedProps() {
-            return {
-                ...this.$props,
-                items: this.countries,
-                itemText: this.displayShortCode? 'countryShortCode' : 'countryName',
-                itemValue: this.countryName ? 'countryName' : 'countryShortCode',
-                autocomplete: this.autocompleteAttr,
-            }
-        }
+    backgroundColor: {
+      type: String,
     },
-}
+    clearable: {
+      type: Boolean,
+      default: false,
+    },
+    filled: {
+      type: Boolean,
+      default: false,
+    },
+    fullWidth: {
+      type: Boolean,
+      default: false,
+    },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
+    light: {
+      type: Boolean,
+      default: false,
+    },
+    validateOnBlur: {
+      type: Boolean,
+      default: false,
+    },
+    outlined: {
+      type: Boolean,
+      default: false,
+    },
+    dense: {
+      type: Boolean,
+      default: false,
+    },
+    persistentHint: {
+      type: Boolean,
+      default: false,
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+    error: {
+      type: Boolean,
+      default: false,
+    },
+    success: {
+      type: Boolean,
+      default: false,
+    },
+    shaped: {
+      type: Boolean,
+      default: false,
+    },
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
+    value: {
+      type: [String, Object],
+      default: "",
+    },
+    label: {
+      type: String,
+    },
+    rules: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+  },
+  data() {
+    return {
+      countryList: [],
+      country: "",
+      countries,
+    };
+  },
+  methods: {
+    selectCountry() {
+      this.$emit("input", this.country);
+      EventBus.$emit("countryValue", this.country);
+    },
+  },
+};
 </script>

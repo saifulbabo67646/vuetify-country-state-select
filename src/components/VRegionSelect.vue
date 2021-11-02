@@ -1,98 +1,130 @@
 <template>
-    <v-select v-bind="computedProps" v-on="$listeners"></v-select>
+    <v-autocomplete
+      :items="regionList"
+      item-value="name"
+      item-text="name"
+      :value="value"
+      v-model="region"
+      :outlined="outlined"
+      :filled="filled"
+      :flat="flat"
+      :label="label"
+      :rules="rules"
+      return-object
+      @input="selectRegion()"
+    ></v-autocomplete>
 </template>
 
 <script>
-import { VSelect } from 'vuetify/lib'
-import regions from '@/data.js'
+import { VAutocomplete } from "vuetify/lib";
+import states from "@/data.js";
+// import { EventBus } from "../main";
+import { EventBus } from "@/event";
 
 export default {
-    name: 'VRegionSelect',
-    extends: VSelect,
-    props: {
-        country: String,
-        defaultRegion: { type: String, default: 'AU' },
-        countryName: { type: Boolean, default: false },
-        whiteList: Array,
-        blackList: Array,
-        regionName: Boolean,
-        usei18n: { type: Boolean, default: true },
+  name: "VRegionSelect",
+  extends: VAutocomplete,
+  props: {
+    countryValue: {
+      type: String,
     },
-    data: () => ({
-        shownRegions: [],
-        regions,
-        ran: false
-    }),
-    mounted() {
-        if (this.country) {
-            this.getRegionWithCountry()
-        } else {
-            this.getRegionWithCountry(this.defaultRegion )
-        }
+    backgroundColor: {
+      type: String,
     },
-    computed: {
-        valueType() {
-          return this.regionName ? 'name' : 'shortCode'
-        },
-        autocompleteAttr() {
-            return this.autocomplete ? "address-level1" : "off";
-        },
-        computedProps() {
-            return {
-                ...this.$props,
-                items: this.shownRegions,
-                itemText: this.displayShortCode? 'shortCode' : 'name',
-                itemValue: this.countryName ? 'countryName' : 'countryShortCode',
-                autocomplete: this.autocompleteAttr,
-            }
-        }
+    clearable: {
+      type: Boolean,
+      default: false,
     },
-    methods: {
-        getRegionWithCountry(country) {
-            country = country || this.country
-            let countryRegions = regions.find((elem) => {
-                if (this.countryName) {
-                    return elem.countryName === country
-                } else {
-                    return elem.countryShortCode === country
-                }
-            }).regions
-            if (this.$i18n && this.usei18n) {
-                countryRegions = countryRegions.map((region) => {
-                    let localeRegion = Object.assign({}, region)
-                    localeRegion.name = this.$t(region.name)
-                    return localeRegion
-                })
-                countryRegions.sort((region1, region2) => {
-                    return region1.name > region2.name ? 1 : -1
-                })
-            }
-            if (this.whiteList) {
-                countryRegions = countryRegions.filter((region) => {
-                    return this.whiteList.includes(region.shortCode)
-                })
-            }
-            if (this.blackList) {
-                countryRegions = countryRegions.filter((region) => {
-                    return !this.blackList.includes(region.shortCode)
-                })
-            }
-            this.shownRegions = countryRegions
-            this.ran = true
-        }
+    filled: {
+      type: Boolean,
+      default: false,
     },
-    watch: {
-      country(newVal, oldVal) {
-        if (oldVal !== '') {
-            this.$emit('input', '')
-        }
-        if (this.country) {
-            this.getRegionWithCountry()
-        } else {
-            this.shownRegions = []
-        }
+    fullWidth: {
+      type: Boolean,
+      default: false,
+    },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
+    light: {
+      type: Boolean,
+      default: false,
+    },
+    validateOnBlur: {
+      type: Boolean,
+      default: false,
+    },
+    outlined: {
+      type: Boolean,
+      default: false,
+    },
+    dense: {
+      type: Boolean,
+      default: false,
+    },
+    persistentHint: {
+      type: Boolean,
+      default: false,
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+    error: {
+      type: Boolean,
+      default: false,
+    },
+    success: {
+      type: Boolean,
+      default: false,
+    },
+    shaped: {
+      type: Boolean,
+      default: false,
+    },
+    singleLine: {
+      type: Boolean,
+      default: false,
+    },
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
+    value: {
+      type: [Object, String],
+    },
+    label: {
+      type: String,
+    },
+    rules: {
+      type: Array,
+      default() {
+        return [];
       }
-    }
-}
+    },
+  },
+  data() {
+    return {
+      states,
+      countryName: null,
+      region: "",
+    };
+  },
+  computed: {
+    regionList() {
+      return this?.countryName?.regions || [];
+    },
+  },
+  mounted() {
+    EventBus.$on("countryValue", (country) => {
+      this.countryName = country;
+    });
+  },
+  methods: {
+    selectRegion() {
+      this.$emit("input", this.region);
+    },
+  },
+};
 </script>
-
