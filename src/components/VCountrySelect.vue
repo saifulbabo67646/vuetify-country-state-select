@@ -1,8 +1,9 @@
 <template>
     <v-autocomplete
       :items="countries"
-      item-text="countryName"
-      item-value="text"
+      :item-text="itemText"
+      :item-value="itemValue"
+      :error-messages="errorMessage"
       :value="value"
       v-model="country"
       :outlined="outlined"
@@ -101,6 +102,15 @@ export default {
       default() {
         return [];
       }
+    },
+    itemText: {
+      type: String,
+    },
+    itemValue: {
+      type: String,
+    },
+    errorMessage: {
+      type: [String, Array]
     },
   },
   data() {

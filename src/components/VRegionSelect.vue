@@ -1,8 +1,9 @@
 <template>
     <v-autocomplete
       :items="regionList"
-      item-value="name"
-      item-text="name"
+      :item-text="itemText"
+      :item-value="itemValue"
+      :error-messages="errorMessage"
       :value="value"
       v-model="region"
       :outlined="outlined"
@@ -102,6 +103,15 @@ export default {
       default() {
         return [];
       }
+    },
+    itemText: {
+      type: String,
+    },
+    itemValue: {
+      type: String,
+    },
+    errorMessage: {
+      type: [String, Array]
     },
   },
   data() {

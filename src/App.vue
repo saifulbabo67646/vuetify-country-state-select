@@ -12,9 +12,9 @@
           <v-card>
             <v-card-text>
               country: {{ country.countryName }}
-              <v-country-select v-model="country"/>
+              <v-country-select itemText="countryName" v-model="country"/>
               region/state: {{ region.name }}
-              <v-region-select v-model="region" />
+              <v-region-select itemText="name" v-model="region" />
             </v-card-text>
           </v-card>
         </v-flex>
