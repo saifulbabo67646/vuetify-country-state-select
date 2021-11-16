@@ -13,6 +13,7 @@
       :country="country"
       :rules="rules"
       @input="selectCountry()"
+      :dense="dense"
       return-object
     ></v-autocomplete>
 </template>

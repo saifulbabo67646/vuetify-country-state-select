@@ -11,6 +11,7 @@
       :flat="flat"
       :label="label"
       :rules="rules"
+      :dense="dense"
       return-object
       @input="selectRegion()"
     ></v-autocomplete>

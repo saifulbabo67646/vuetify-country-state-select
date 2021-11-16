@@ -11,8 +11,8 @@
           <div class="text-center my-5 text-h5 font-weight-bold">vuetify-country-region-input</div>
           <v-card>
             <v-card-text>
-              country: {{ country.countryName }}
-              <v-country-select itemText="countryName" v-model="country"/>
+              country: {{ country.countryCode }}
+              <v-country-select dense itemText="countryName" v-model="country"/>
               region/state: {{ region.name }}
               <v-region-select itemText="name" v-model="region" />
             </v-card-text>
